@@ -1,0 +1,50 @@
+--- repos/PLN/lib_pln.metta	2026-10-06 13:44:06.983489837 +0300
++++ src/lib_pln_fixed.metta	2026-10-07 13:02:12.806108047 +0300
+@@ -1,3 +1,5 @@
++;; PATCHED COPY of trueagi-io/PLN lib_pln.metta (MIT licensed).
++;; Changes: abduction argument order; Bayes inversion. See docs/lib_pln_fix.diff
+ ;Shortcut for and with 5 args
+ (= (and5 $0 $1 $2 $3 $4)
+    (and $0 (and $1 (and $2 (and $3 $4)))))
+@@ -147,10 +149,12 @@
+ (= (Truth_Negation (stv $s $c))
+    (stv (- 1.0 $s) $c))
+ 
+-(= (Truth_inversion (stv $Bs $Bc) (stv $ABs $ABc))
+-   ; confidence depends on Truth of (target) B node, which is not according to OpenCOG classic.
+-   ; confidence penality not according to OpenCOG classic PLN. Is weaker in this implementation.
+-   (stv $ABs (* $Bc (* $ABc 0.6))))
++(= (Truth_inversion (stv $As $Ac) (stv $Bs $Bc) (stv $ABs $ABc))
++   ; PATCH: Bayes inversion, sBA = sAB * sA / sB (docs/rule_proofs.md, section 3).
++   ; Inconsistent inputs give (stv 1 0), meaning no information, like Truth_Deduction.
++   (if (conditional-probability-consistency $As $Bs $ABs)
++       (stv (/safe (* $ABs $As) $Bs) (* $Bc (* $ABc 0.6)))
++       (stv 1 0)))
+ 
+ ; see https://github.com/opencog/pln/blob/master/opencog/pln/rules/wip/equivalence-to-implication.scm
+ (= (Truth_equivalenceToImplication (stv $As $Ac) (stv $Bs $Bc) (stv $ABs $ABc))
+@@ -254,9 +258,7 @@
+ (= (|- (($LinkType $A $C) $T1)
+        (($LinkType $B $C) $T2))
+    (if (SyllogisticRuleGuard $LinkType)
+-       (($LinkType $A $B) (Truth_Abduction (STV $A)
+-                                           (STV $B)
+-                                           (STV $C) $T1 $T2)) (empty)))
++       (($LinkType $A $B) (Truth_Abduction (STV $A) (STV $C) (STV $B) $T1 $T2)) (empty)))
+ 
+ ;Usage of inheritance for predicates
+ ;unary arg
+@@ -285,11 +287,11 @@
+ 
+ ; Inheritance Inversion Rule, see https://github.com/opencog/pln/blob/master/opencog/pln/rules/wip/inversion.scm
+ (= (|- ((Inheritance $A $B) $Truth))
+-   ((Inheritance $B $A) (Truth_inversion (STV $B) $Truth)))
++   ((Inheritance $B $A) (Truth_inversion (STV $A) (STV $B) $Truth)))
+ 
+ ; Implication Inversion Rule (same)
+ (= (|- ((Implication $A $B) $Truth))
+-   ((Implication $B $A) (Truth_inversion (STV $B) $Truth)))
++   ((Implication $B $A) (Truth_inversion (STV $A) (STV $B) $Truth)))
+ 
+ ; Equivalence to Implication Rule, see https://github.com/opencog/pln/blob/master/opencog/pln/rules/wip/equivalence-to-implication.scm
+ (= (|- ((Equivalence $A $B) $Truth))
