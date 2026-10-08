@@ -1,0 +1,11 @@
+!(import! &self (library lib_import))
+!(git-import! "https://github.com/trueagi-io/PLN.git")
+!(import! &self (library PLN lib_pln))
+!(import! &self ../kb/security_kb)
+!(import! &self ../kb/scenario_facts)
+!(import! &self ../src/backward)
+!(import! &self ../src/engine)
+; S2 incomplete evidence: Host42 has one alert (failed-login burst) and nothing else.
+!(Compare (kb) Host42 BruteForce 1)
+!(Compare (kb) Host42 AdminMaintenance 1)
+!(Compare (kb) Host42 MalwareExec 1)

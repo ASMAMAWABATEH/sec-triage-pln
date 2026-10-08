@@ -1,0 +1,10 @@
+!(import! &self (library lib_import))
+!(git-import! "https://github.com/trueagi-io/PLN.git")
+!(import! &self (library PLN lib_pln))
+!(import! &self ../kb/security_kb)
+!(import! &self ../kb/scenario_facts)
+!(import! &self ../src/backward)
+!(import! &self ../src/engine)
+; S1 supported conclusion: two independent sensors agree, so revision raises confidence.
+(= (kbS1) (append (kb) (extraS1)))
+!(Compare (kbS1) Host17 Compromised 1)
