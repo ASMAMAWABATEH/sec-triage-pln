@@ -2,3 +2,4 @@
 !(import! &self ../kb/security_kb)
 !(import! &self ../kb/scenario_facts)
 !(ValidateAll (extraS1))
+!(ValidateAll (extraS4))

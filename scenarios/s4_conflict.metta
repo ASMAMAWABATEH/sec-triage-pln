@@ -1,0 +1,12 @@
+!(import! &self (library lib_import))
+!(git-import! "https://github.com/trueagi-io/PLN.git")
+!(import! &self (library PLN lib_pln))
+!(import! &self ../kb/security_kb)
+!(import! &self ../kb/scenario_facts)
+!(import! &self ../src/backward)
+!(import! &self ../src/engine)
+; S4 conflicting evidence: the belief about Host17 changes when new evidence arrives.
+(= (kbS4before) (append (kb) (extraS4early)))
+(= (kbS4after)  (append (kb) (extraS4)))
+!(Compare (kbS4before) Host17 Compromised 1)
+!(Compare (kbS4after)  Host17 Compromised 1)

@@ -1,0 +1,35 @@
+== tests/validate_test.metta
+((BAD Inheritance TA TB 0.9 (range 0 0.5) (1)) (OK Inheritance TA TB 0.5 (range 0 0.5) (2)) (BAD Inheritance TC TD 0.3 (range 0.7777777777777779 0.888888888888889) (3)))
+== tests/validate_security_kb.metta
+((OK Inheritance PhishingCompromise SuspiciousPS 0.8 (range 0 1) (1)) (OK Inheritance AdminMaintenance SuspiciousPS 0.3 (range 0 0.5) (2)) (OK Inheritance Host17 SuspiciousPS 0.95 (range 0 1) (3)) (OK Inheritance PhishingCompromise MalwareExec 0.5 (range 0 1) (4)) (OK Inheritance MalwareExec CredentialTheft 0.4 (range 0 0.5) (5)) (OK Inheritance CredentialTheft LateralMovement 0.5 (range 0 0.6666666666666667) (6)) (OK Inheritance LateralMovement DataExfiltration 0.3 (range 0 0.5) (7)) (OK Inheritance MalwareExec OutboundBeacon 0.7 (range 0 1.0) (8)) (OK Inheritance Host17 OutboundBeacon 0.5 (range 0 0.6) (9)) (OK Inheritance BruteForce FailedLoginBurst 0.9 (range 0 1) (10)) (OK Inheritance AdminMaintenance FailedLoginBurst 0.2 (range 0 0.39999999999999997) (11)) (OK Inheritance Host42 FailedLoginBurst 0.6 (range 0 1) (12)) (OK Inheritance BruteForce CredentialTheft 0.3 (range 0 1) (13)) (OK Inheritance CredentialTheft Compromised 0.9 (range 0 1) (14)) (OK Inheritance MalwareExec Compromised 0.95 (range 0 1) (15)) (OK Inheritance LateralMovement Compromised 0.95 (range 0 1) (16)))
+16
+16
+== tests/validate_scenarios.metta
+((OK Inheritance Host17 Compromised 0.75 (range 0 0.7999999999999999) (20)) (OK Inheritance Host17 Compromised 0.65 (range 0 0.7999999999999999) (21)))
+((OK Inheritance Host17 Compromised 0.1 (range 0 0.7999999999999999) (30)) (OK Inheritance Host17 Compromised 0.7 (range 0 0.7999999999999999) (31)) (OK Inheritance Host17 Compromised 0.8 (range 0 0.7999999999999999) (32)))
+== tests/backward_test.metta
+((BwProof (stv 0.20154639175257733 0.14400000000000002) (4 5) (Deduction (Fact PhishingCompromise MalwareExec) (Fact MalwareExec CredentialTheft))))
+((BwProof (stv 0.15222222222222223 0.4348686069511162) (3 1) (Abduction (Fact Host17 SuspiciousPS) (Fact PhishingCompromise SuspiciousPS))))
+((BwProof (stv 0.5777777777777777 0.4348686069511162) (3 2) (Abduction (Fact Host17 SuspiciousPS) (Fact AdminMaintenance SuspiciousPS))))
+((BwProof (stv 0.95 0.9) (3) (Fact Host17 SuspiciousPS)))
+((BwProof (stv 0.05111111111111111 0.19549477071600965) (2 1) (Abduction (Fact AdminMaintenance SuspiciousPS) (Fact PhishingCompromise SuspiciousPS))))
+()
+()
+== scenarios/s1_supported.metta
+(Result (goal Host17 Compromised) (forward (((stv 0.75 0.8) (20)))) (backward ((BwProof (stv 0.7000000000000001 0.888888888888889) (20 21) (Revision (Fact Host17 Compromised) (Fact Host17 Compromised))))))
+== scenarios/s2_incomplete.metta
+(Result (goal Host42 BruteForce) (forward (())) (backward ((BwProof (stv 0.06793478260869566 0.3270524899057874) (12 10) (Abduction (Fact Host42 FailedLoginBurst) (Fact BruteForce FailedLoginBurst))))))
+(Result (goal Host42 AdminMaintenance) (forward (())) (backward ((BwProof (stv 0.3695652173913043 0.3270524899057874) (12 11) (Abduction (Fact Host42 FailedLoginBurst) (Fact AdminMaintenance FailedLoginBurst))))))
+(Result (goal Host42 MalwareExec) (forward (())) (backward ()))
+== scenarios/s3_competing.metta
+(Result (goal Host17 PhishingCompromise) (forward (((stv 0.15222222222222223 0.4348686069511162) (1 3)))) (backward ((BwProof (stv 0.15222222222222223 0.4348686069511162) (3 1) (Abduction (Fact Host17 SuspiciousPS) (Fact PhishingCompromise SuspiciousPS))))))
+(Result (goal Host17 AdminMaintenance) (forward (())) (backward ((BwProof (stv 0.5777777777777777 0.4348686069511162) (3 2) (Abduction (Fact Host17 SuspiciousPS) (Fact AdminMaintenance SuspiciousPS))))))
+(Result (goal Host17 MalwareExec) (forward (())) (backward ((BwProof (stv 0.3546391752577319 0.28825622775800713) (9 8) (Abduction (Fact Host17 OutboundBeacon) (Fact MalwareExec OutboundBeacon))))))
+== scenarios/s4_conflict.metta
+(Result (goal Host17 Compromised) (forward (((stv 0.1 0.6) (30)))) (backward ((BwProof (stv 0.33999999999999997 0.7142857142857143) (30 31) (Revision (Fact Host17 Compromised) (Fact Host17 Compromised))))))
+(Result (goal Host17 Compromised) (forward (((stv 0.7000000000000001 0.92) (30 31 32)))) (backward ((BwProof (stv 0.7000000000000001 0.92) (30 31 32) (Revision (Revision (Fact Host17 Compromised) (Fact Host17 Compromised)) (Fact Host17 Compromised))))))
+== scenarios/s5_chain.metta
+(Result (goal PhishingCompromise MalwareExec) (forward (((stv 0.5 0.9) (4)))) (backward ((BwProof (stv 0.5 0.9) (4) (Fact PhishingCompromise MalwareExec)))))
+(Result (goal PhishingCompromise CredentialTheft) (forward (((stv 0.20154639175257733 0.16275954454119224) (4 5)))) (backward ((BwProof (stv 0.20154639175257733 0.14400000000000002) (4 5) (Deduction (Fact PhishingCompromise MalwareExec) (Fact MalwareExec CredentialTheft))))))
+(Result (goal PhishingCompromise LateralMovement) (forward (((stv 0.19971835476671274 0.10269200157489952) (4 5 6)))) (backward ((BwProof (stv 0.10279972787691664 0.011607715736040611) (4 5 6) (Deduction (Fact PhishingCompromise MalwareExec) (Deduction (Fact MalwareExec CredentialTheft) (Fact CredentialTheft LateralMovement)))))))
+(Result (goal PhishingCompromise DataExfiltration) (forward (((stv 0.1794256084417237 0.12601092057150465) (4 5 6 7)))) (backward ((BwProof (stv 0.032652444165343845 0.00011337807721888939) (4 5 6 7) (Deduction (Fact PhishingCompromise MalwareExec) (Deduction (Fact MalwareExec CredentialTheft) (Deduction (Fact CredentialTheft LateralMovement) (Fact LateralMovement DataExfiltration))))))))
