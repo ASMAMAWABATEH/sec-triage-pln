@@ -42,8 +42,7 @@ strength 3.8; after it, all results match hand calculations.
 
 ## 5. Observations
 Admin maintenance outranks phishing for Host17 because it is ten times more common, even though
-phishing explains the alert better; base rates dominate abduction. In S5 each hop multiplies
-confidence by roughly a tenth. Comparing the two chainers on the 13 questions with default
+phishing explains the alert better; base rates dominate abduction. In S5 confidence shrinks faster with each hop (by factors of about 6, 12 and 100). Comparing the two chainers on the 13 questions with default
 settings, the library's forward search answered 8 and matched our result exactly on 3; our backward
 chainer answered all 12 provable questions and correctly returned nothing for the unprovable one.
 The forward search is bounded and sensitive to queue sizes and fact order (traced in
